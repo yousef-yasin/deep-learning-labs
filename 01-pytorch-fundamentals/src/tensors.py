@@ -42,3 +42,34 @@ print(y.shape)
 
 z=y.reshape(3,4)
 print(z)
+
+# Example 1
+a = th.tensor([1,2,3])
+print(a+5)  #6,7,8
+
+# Example 2
+a = th.tensor([[1,2,3],
+               [4,5,6]])
+b = th.tensor([10,20,30])
+print(a+b)#11,22,33
+          #14,25,36
+
+# Example 3
+a = th.ones(3,3)
+print(a*10)#10 10 10
+           #10 10 10
+           #10 10 10
+
+# Example 4
+a = th.tensor([[1],#(1,3)
+               [2],
+               [3]])
+b = th.tensor([10,20,30])#(1,3)
+print(a+b)# 11  21  31
+          #12  22   33
+          #13 23 33
+
+x = th.tensor(5.0, requires_grad=True)
+
+y = x**2
+y.backward()
