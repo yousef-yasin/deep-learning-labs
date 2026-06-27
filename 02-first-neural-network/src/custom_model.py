@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
-from torch.utils.data import Dataset , DataLoader
+from torch.utils.data import Dataset, DataLoader
+
 
 class MyModel(nn.Module):
 
@@ -22,11 +23,11 @@ class MyModel(nn.Module):
         x = self.linear2(x)
 
         return x
-    
+
 
 class MyDataset(Dataset):
 
-    def __init__(self): # to use class one time
+    def __init__(self):
         self.x = torch.tensor([[2, 2],
                                [4, 6],
                                [2, 7]], dtype=torch.float32)
@@ -35,21 +36,47 @@ class MyDataset(Dataset):
                                [3, 2],
                                [4, 4]], dtype=torch.float32)
 
-    def __len__(self): #to use the len
+    def __len__(self):
         return len(self.x)
 
-    def __getitem__(self, index): #to get the index of the linear matrix
+    def __getitem__(self, index):
         return self.x[index], self.y[index]
 
 
 dataset = MyDataset()
 dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
 
-for batch_x, batch_y in dataloader:
-    print(batch_x)
-    print(batch_y)
-    
-print(len(dataset))
-print(dataset[0])
-print(dataset[1])
-print(dataset[2])
+model = MyModel()
+
+loss_fn = nn.MSELoss()
+optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+
+for epoch in range(300):
+
+    total_loss = 0
+
+    for batch_x, batch_y in dataloader:
+
+        prediction = model(batch_x)
+
+        loss = loss_fn(prediction, batch_y)
+
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        total_loss = total_loss + loss.item()
+
+    average_loss = total_loss / len(dataloader)
+
+    if epoch % 50 == 0:
+        print("Epoch:", epoch)
+        print("Average Loss:", average_loss)
+        print("----------------")
+
+
+test = torch.tensor([[1.0, 3.0]], dtype=torch.float32)
+prediction = model(test)
+
+print("Prediction:")
+print(prediction)
