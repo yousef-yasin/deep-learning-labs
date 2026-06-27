@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-
+from torch.utils.data import Dataset
 
 class MyModel(nn.Module):
 
@@ -22,36 +22,28 @@ class MyModel(nn.Module):
         x = self.linear2(x)
 
         return x
+    
 
-x = torch.tensor([[2, 2],
-                  [4, 6],
-                  [2, 7]], dtype=torch.float32)
+class MyDataset(Dataset):
 
-y = torch.tensor([[1, 1],
-                  [3, 2],
-                  [4, 4]], dtype=torch.float32)
+    def __init__(self): # to use class one time
+        self.x = torch.tensor([[2, 2],
+                               [4, 6],
+                               [2, 7]], dtype=torch.float32)
 
-model = MyModel()
+        self.y = torch.tensor([[1, 1],
+                               [3, 2],
+                               [4, 4]], dtype=torch.float32)
 
-loss_fn = nn.MSELoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+    def __len__(self): #to use the len
+        return len(self.x)
 
-for epoch in range(300):
-    prediction = model(x)
+    def __getitem__(self, index): #to get the index of the linear matrix
+        return self.x[index], self.y[index]
 
-    loss = loss_fn(prediction, y)
 
-    optimizer.zero_grad()
-    loss.backward()
-    optimizer.step()
-
-    if epoch % 50 == 0:
-        print("Epoch:", epoch)
-        print("Loss:", loss.item())
-        print("----------------")
-
-test = torch.tensor([[1.0, 3.0]])
-prediction = model(test)
-
-print("Prediction:")
-print(prediction)
+dataset = MyDataset()
+print(len(dataset))
+print(dataset[0])
+print(dataset[1])
+print(dataset[2])
