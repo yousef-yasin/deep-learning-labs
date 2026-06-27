@@ -115,9 +115,11 @@ with torch.no_grad():
 
     prediction = model(test)
 
-print(prediction)
+predicted_class = 1 if prediction.item() >= 0.5 else 0
 
-if prediction.item() >= 0.5:
-    print("Pass ")
+print("Probability:", prediction.item())
+
+if predicted_class == 1:
+    print("Pass")
 else:
-    print("Fail ")
+    print("Fail")
