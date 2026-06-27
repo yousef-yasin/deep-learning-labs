@@ -32,17 +32,18 @@ class StudentDataset(Dataset):#make dataset in your code (Dataset) mean this cla
     def __getitem__(self, index): #to get the index of the matrix (dataset[0])
         return self.x[index], self.y[index]
 
+#first i make the dataset 
 
-class StudentModel(nn.Module):
+class StudentModel(nn.Module): #its for neural network(will found 1- init 2- forward)
 
-    def __init__(self):
+    def __init__(self): #it run once
         super().__init__()
 
         self.linear1 = nn.Linear(2, 8)
-        self.relu = nn.ReLU()
+        self.relu = nn.ReLU()      #Activation Function (make all number positive)
         self.linear2 = nn.Linear(8, 1)
 
-    def forward(self, x):
+    def forward(self, x): #second function
         x = self.linear1(x)
         x = self.relu(x)
         x = self.linear2(x)
@@ -50,10 +51,10 @@ class StudentModel(nn.Module):
         return x
 
 
-dataset = StudentDataset()
-dataloader = DataLoader(dataset, batch_size=5, shuffle=True)
+dataset = StudentDataset() #first class
+dataloader = DataLoader(dataset, batch_size=5, shuffle=True) #to reduce the loss function
 
-model = StudentModel()
+model = StudentModel() #second class
 
 loss_fn = nn.MSELoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
