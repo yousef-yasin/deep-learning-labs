@@ -5,7 +5,7 @@ from torch.utils.data import Dataset, DataLoader
 # Project: Student Score Prediction using PyTorch
 # Input: study_hours, sleep_hours
 # Output: exam_score
-
+#The relationship between the number of study hours and sleep hours, then predicts a new student's grade.
 
 class StudentDataset(Dataset):#make dataset in your code (Dataset) mean this class is the dataset
 
@@ -85,10 +85,10 @@ for epoch in range(1000):
 
 test = torch.tensor([[7, 6]], dtype=torch.float32)
 
-model.eval()
+model.eval() #the training end now only answer
 
-with torch.no_grad():
-    prediction = model(test)
+with torch.no_grad(): #dont calc the gradient 
+    prediction = model(test) #see the prediction
 
 print("Student study hours: 7")
 print("Student sleep hours: 6")
