@@ -2,10 +2,31 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 
+
 class StudentDataset(Dataset):
+
     def __init__(self):
-        self.x = torch.tensor([[1, 2], [2, 2], [6, 8]], dtype=torch.float32)
-        self.y = torch.tensor([[50], [70], [90]], dtype=torch.float32)
+
+        self.x = torch.tensor([
+            [2, 8],
+            [3, 7],
+            [4, 6],
+            [6, 7],
+            [8, 6],
+            [10, 5]
+        ], dtype=torch.float32)
+
+        # 0 = Fail
+        # 1 = Pass
+
+        self.y = torch.tensor([
+            [0],
+            [0],
+            [0],
+            [1],
+            [1],
+            [1]
+        ], dtype=torch.float32)
 
     def __len__(self):
         return len(self.x)
@@ -15,38 +36,62 @@ class StudentDataset(Dataset):
 
 
 class StudentModel(nn.Module):
+
     def __init__(self):
         super().__init__()
 
-        self.linear1 = nn.Linear(2, 7)
+        self.linear1 = nn.Linear(2, 8)
+
         self.relu = nn.ReLU()
-        self.linear2 = nn.Linear(7, 1)
+
+        self.linear2 = nn.Linear(8, 1)
+
+        self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
+
         x = self.linear1(x)
+
         x = self.relu(x)
+
         x = self.linear2(x)
+
+        x = self.sigmoid(x)
+
         return x
 
 
 dataset = StudentDataset()
-dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
+
+dataloader = DataLoader(
+    dataset,
+    batch_size=2,
+    shuffle=True
+)
 
 model = StudentModel()
 
-loss_fn = nn.MSELoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+loss_fn = nn.BCELoss() 
 
-for epoch in range(100):
+optimizer = torch.optim.SGD(
+    model.parameters(),
+    lr=0.01
+)
+
+for epoch in range(500):
+
     total_loss = 0
 
     for batch_x, batch_y in dataloader:
+
         prediction = model(batch_x)
 
         loss = loss_fn(prediction, batch_y)
 
         optimizer.zero_grad()
+
         loss.backward()
+
         optimizer.step()
 
         total_loss += loss.item()
@@ -54,9 +99,12 @@ for epoch in range(100):
     average_loss = total_loss / len(dataloader)
 
     if epoch % 50 == 0:
+
         print("Epoch:", epoch)
-        print("Average Loss:", average_loss)
-        print("----------------")
+
+        print("Loss:", average_loss)
+
+        print("-------------------")
 
 
 test = torch.tensor([[7, 6]], dtype=torch.float32)
@@ -64,9 +112,12 @@ test = torch.tensor([[7, 6]], dtype=torch.float32)
 model.eval()
 
 with torch.no_grad():
+
     prediction = model(test)
 
-print("Student study hours: 7")
-print("Student sleep hours: 6")
-print("Predicted exam score:")
-print(prediction.item())
+print(prediction)
+
+if prediction.item() >= 0.5:
+    print("Pass ")
+else:
+    print("Fail ")
