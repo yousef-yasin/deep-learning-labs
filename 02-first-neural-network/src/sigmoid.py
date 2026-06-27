@@ -71,7 +71,7 @@ dataloader = DataLoader(
 
 model = StudentModel()
 
-loss_fn = nn.BCELoss() 
+loss_fn = nn.BCELoss() #Binary Cross Entropy
 
 optimizer = torch.optim.SGD(
     model.parameters(),
@@ -107,7 +107,7 @@ for epoch in range(500):
         print("-------------------")
 
 
-test = torch.tensor([[7, 6]], dtype=torch.float32)
+test = torch.tensor([[2,7]], dtype=torch.float32)
 
 model.eval()
 
