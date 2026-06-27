@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset , DataLoader
 
 class MyModel(nn.Module):
 
@@ -43,6 +43,12 @@ class MyDataset(Dataset):
 
 
 dataset = MyDataset()
+dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
+
+for batch_x, batch_y in dataloader:
+    print(batch_x)
+    print(batch_y)
+    
 print(len(dataset))
 print(dataset[0])
 print(dataset[1])
