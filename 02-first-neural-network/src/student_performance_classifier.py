@@ -75,4 +75,33 @@ dataloader = DataLoader(
 )
 
 model = StudentPerformanceModel()
-print(model)
+
+loss_fn = nn.CrossEntropyLoss()
+
+optimizer = torch.optim.SGD(
+    model.parameters(),
+    lr=0.01
+)
+
+for epoch in range(500):
+
+    total_loss = 0
+
+    for batch_x, batch_y in dataloader:
+
+        prediction = model(batch_x)
+
+        loss = loss_fn(prediction, batch_y)
+
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        total_loss += loss.item()
+
+    average_loss = total_loss / len(dataloader)
+
+    if epoch % 50 == 0:
+        print("Epoch:", epoch)
+        print("Loss:", average_loss)
+        print("----------------")
