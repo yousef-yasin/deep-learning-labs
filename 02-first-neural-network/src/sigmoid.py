@@ -41,9 +41,7 @@ class StudentModel(nn.Module):
         super().__init__()
 
         self.linear1 = nn.Linear(2, 8)
-
-        self.relu = nn.ReLU()
-
+        self.tanh = nn.Tanh()
         self.linear2 = nn.Linear(8, 1)
 
         self.sigmoid = nn.Sigmoid()
@@ -51,9 +49,7 @@ class StudentModel(nn.Module):
     def forward(self, x):
 
         x = self.linear1(x)
-
-        x = self.relu(x)
-
+        x = self.tanh(x)
         x = self.linear2(x)
 
         x = self.sigmoid(x)
