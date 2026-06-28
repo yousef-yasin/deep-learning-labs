@@ -99,4 +99,4 @@ ReLU
         ↓
 Linear(8 → 3)
         ↓
-Output Classes: Low / Medium / High
+Output Classes: Low / Medium / High.
