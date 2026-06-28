@@ -1,8 +1,9 @@
-import torch #library for Pytouch
+import torch
+import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 
 
-class StudentPerformanceDataset(Dataset): #class for dataset
+class StudentPerformanceDataset(Dataset):
 
     def __init__(self):
         self.x = torch.tensor([
@@ -15,21 +16,14 @@ class StudentPerformanceDataset(Dataset): #class for dataset
             [8, 7, 88, 4],
             [9, 8, 92, 5],
             [10, 8, 95, 5],
-        ], dtype=torch.float32) #make it float to pytouch (the input)
+        ], dtype=torch.float32)
 
-        # 0 = Low
-        # 1 = Medium
-        # 2 = High
-        self.y = torch.tensor([ #(the output)
-            0,
-            0,
-            0,
-            1,
-            1,
-            1,
-            2,
-            2,
-            2
+        self.x = self.x / torch.tensor([10, 8, 100, 5], dtype=torch.float32)
+
+        self.y = torch.tensor([
+            0, 0, 0,
+            1, 1, 1,
+            2, 2, 2
         ], dtype=torch.long)
 
     def __len__(self):
@@ -37,8 +31,6 @@ class StudentPerformanceDataset(Dataset): #class for dataset
 
     def __getitem__(self, index):
         return self.x[index], self.y[index]
-
-import torch.nn as nn
 
 
 class StudentPerformanceModel(nn.Module):
@@ -64,7 +56,7 @@ class StudentPerformanceModel(nn.Module):
         x = self.linear3(x)
 
         return x
-    
+
 
 dataset = StudentPerformanceDataset()
 
