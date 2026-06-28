@@ -65,7 +65,7 @@ class StudentPerformanceModel(nn.Module):
 
         return x
     
-    
+
 dataset = StudentPerformanceDataset()
 
 dataloader = DataLoader(
@@ -74,9 +74,5 @@ dataloader = DataLoader(
     shuffle=True
 )
 
-for batch_x, batch_y in dataloader: 
-    print("Batch X:")
-    print(batch_x)
-    print("Batch Y:")
-    print(batch_y)
-    print("----------------")
+model = StudentPerformanceModel()
+print(model)
