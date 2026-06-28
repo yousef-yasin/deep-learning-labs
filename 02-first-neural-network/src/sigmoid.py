@@ -16,8 +16,7 @@ class StudentDataset(Dataset):
             [10, 5]
         ], dtype=torch.float32)
 
-        # 0 = Fail
-        # 1 = Pass
+
 
         self.y = torch.tensor([
             [0],
@@ -41,14 +40,14 @@ class StudentModel(nn.Module):
         super().__init__()
 
         self.linear1 = nn.Linear(2, 8)
-        self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
+        self.elu = nn.ELU()
         self.linear2 = nn.Linear(8, 1)
-        self.sigmoid = nn.Sigmoid() 
+        self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
 
         x = self.linear1(x)
-        x = self.leaky_relu(x)
+        x = self.elu(x)
         x = self.linear2(x)
         x = self.sigmoid(x)
         return x
@@ -64,7 +63,7 @@ dataloader = DataLoader(
 
 model = StudentModel()
 
-loss_fn = nn.BCELoss() #Binary Cross Entropy
+loss_fn = nn.BCELoss()
 
 optimizer = torch.optim.SGD(
     model.parameters(),
@@ -100,7 +99,7 @@ for epoch in range(500):
         print("-------------------")
 
 
-test = torch.tensor([[2,7]], dtype=torch.float32)
+test = torch.tensor([[2, 7]], dtype=torch.float32)
 
 model.eval()
 
