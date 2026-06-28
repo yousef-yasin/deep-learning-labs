@@ -41,19 +41,16 @@ class StudentModel(nn.Module):
         super().__init__()
 
         self.linear1 = nn.Linear(2, 8)
-        self.tanh = nn.Tanh()
+        self.leaky_relu = nn.LeakyReLU(negative_slope=0.01)
         self.linear2 = nn.Linear(8, 1)
-
-        self.sigmoid = nn.Sigmoid()
+        self.sigmoid = nn.Sigmoid() 
 
     def forward(self, x):
 
         x = self.linear1(x)
-        x = self.tanh(x)
+        x = self.leaky_relu(x)
         x = self.linear2(x)
-
         x = self.sigmoid(x)
-
         return x
 
 
