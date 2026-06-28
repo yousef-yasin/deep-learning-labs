@@ -6,7 +6,6 @@ from torch.utils.data import Dataset, DataLoader
 class StudentDataset(Dataset):
 
     def __init__(self):
-
         self.x = torch.tensor([
             [2, 8],
             [3, 7],
@@ -15,8 +14,6 @@ class StudentDataset(Dataset):
             [8, 6],
             [10, 5]
         ], dtype=torch.float32)
-
-
 
         self.y = torch.tensor([
             [0],
@@ -40,14 +37,13 @@ class StudentModel(nn.Module):
         super().__init__()
 
         self.linear1 = nn.Linear(2, 8)
-        self.elu = nn.ELU()
+        self.gelu = nn.GELU()
         self.linear2 = nn.Linear(8, 1)
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
-
         x = self.linear1(x)
-        x = self.elu(x)
+        x = self.gelu(x)
         x = self.linear2(x)
         x = self.sigmoid(x)
         return x
@@ -81,9 +77,7 @@ for epoch in range(500):
         loss = loss_fn(prediction, batch_y)
 
         optimizer.zero_grad()
-
         loss.backward()
-
         optimizer.step()
 
         total_loss += loss.item()
@@ -91,11 +85,8 @@ for epoch in range(500):
     average_loss = total_loss / len(dataloader)
 
     if epoch % 50 == 0:
-
         print("Epoch:", epoch)
-
         print("Loss:", average_loss)
-
         print("-------------------")
 
 
@@ -104,7 +95,6 @@ test = torch.tensor([[2, 7]], dtype=torch.float32)
 model.eval()
 
 with torch.no_grad():
-
     prediction = model(test)
 
 predicted_class = 1 if prediction.item() >= 0.5 else 0
