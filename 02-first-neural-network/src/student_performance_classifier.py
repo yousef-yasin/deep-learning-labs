@@ -75,7 +75,7 @@ optimizer = torch.optim.SGD(
     lr=0.01
 )
 
-for epoch in range(500):
+for epoch in range(1500):
 
     total_loss = 0
 
@@ -93,7 +93,45 @@ for epoch in range(500):
 
     average_loss = total_loss / len(dataloader)
 
-    if epoch % 50 == 0:
+    if epoch % 100 == 0:
         print("Epoch:", epoch)
         print("Loss:", average_loss)
         print("----------------")
+
+
+correct = 0
+total = 0
+
+model.eval()
+
+with torch.no_grad():
+    for x, y in dataloader:
+        outputs = model(x)
+        predicted = torch.argmax(outputs, dim=1)
+
+        correct += (predicted == y).sum().item()
+        total += y.size(0)
+
+accuracy = correct / total
+
+print("Accuracy:", accuracy)
+
+new_student = torch.tensor([[7, 8, 90, 4]], dtype=torch.float32)
+
+new_student = new_student / torch.tensor([10, 8, 100, 5], dtype=torch.float32)
+
+model.eval()
+
+with torch.no_grad():
+    output = model(new_student)
+    probabilities = torch.softmax(output, dim=1)
+    predicted_class = torch.argmax(probabilities, dim=1)
+
+print("Probabilities:", probabilities)
+
+if predicted_class.item() == 0:
+    print("Prediction: Low")
+elif predicted_class.item() == 1:
+    print("Prediction: Medium")
+else:
+    print("Prediction: High")
