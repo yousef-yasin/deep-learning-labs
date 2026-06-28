@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
+import matplotlib.pyplot as plt
 
 
 class StudentPerformanceDataset(Dataset):
@@ -18,7 +19,8 @@ class StudentPerformanceDataset(Dataset):
             [10, 8, 95, 5],
         ], dtype=torch.float32)
 
-        self.x = self.x / torch.tensor([10, 8, 100, 5], dtype=torch.float32)
+        self.scale = torch.tensor([10, 8, 100, 5], dtype=torch.float32)
+        self.x = self.x / self.scale
 
         self.y = torch.tensor([
             0, 0, 0,
@@ -75,6 +77,8 @@ optimizer = torch.optim.SGD(
     lr=0.01
 )
 
+loss_history = []
+
 for epoch in range(1500):
 
     total_loss = 0
@@ -92,6 +96,7 @@ for epoch in range(1500):
         total_loss += loss.item()
 
     average_loss = total_loss / len(dataloader)
+    loss_history.append(average_loss)
 
     if epoch % 100 == 0:
         print("Epoch:", epoch)
@@ -115,6 +120,19 @@ with torch.no_grad():
 accuracy = correct / total
 
 print("Accuracy:", accuracy)
+
+
+torch.save(model.state_dict(), "student_performance_model.pth")
+print("Model saved successfully.")
+
+
+plt.plot(loss_history)
+plt.xlabel("Epoch")
+plt.ylabel("Loss")
+plt.title("Training Loss")
+plt.savefig("training_loss.png")
+plt.show()
+
 
 new_student = torch.tensor([[7, 8, 90, 4]], dtype=torch.float32)
 

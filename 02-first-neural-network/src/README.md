@@ -1,5 +1,3 @@
-# deep-learning-labs
-Deep Learning projects including CNNs, RNNs, LSTMs, Transformers, and neural networks.
 # Student Performance Classifier using PyTorch
 
 ## Overview
