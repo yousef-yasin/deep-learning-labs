@@ -15,14 +15,17 @@ class StudentDataset(Dataset):
             [10, 5]
         ], dtype=torch.float32)
 
+        # 0 = Fail
+        # 1 = Good
+        # 2 = Excellent
         self.y = torch.tensor([
-            [0],
-            [0],
-            [0],
-            [1],
-            [1],
-            [1]
-        ], dtype=torch.float32)
+            0,
+            0,
+            1,
+            1,
+            2,
+            2
+        ], dtype=torch.long)
 
     def __len__(self):
         return len(self.x)
@@ -38,14 +41,13 @@ class StudentModel(nn.Module):
 
         self.linear1 = nn.Linear(2, 8)
         self.gelu = nn.GELU()
-        self.linear2 = nn.Linear(8, 1)
-        self.sigmoid = nn.Sigmoid()
+        self.linear2 = nn.Linear(8, 3)
 
     def forward(self, x):
         x = self.linear1(x)
         x = self.gelu(x)
         x = self.linear2(x)
-        x = self.sigmoid(x)
+        
         return x
 
 
@@ -59,7 +61,7 @@ dataloader = DataLoader(
 
 model = StudentModel()
 
-loss_fn = nn.BCELoss()
+loss_fn = nn.CrossEntropyLoss()
 
 optimizer = torch.optim.SGD(
     model.parameters(),
@@ -72,9 +74,9 @@ for epoch in range(500):
 
     for batch_x, batch_y in dataloader:
 
-        prediction = model(batch_x)
+        outputs = model(batch_x)
 
-        loss = loss_fn(prediction, batch_y)
+        loss = loss_fn(outputs, batch_y)
 
         optimizer.zero_grad()
         loss.backward()
@@ -95,13 +97,16 @@ test = torch.tensor([[2, 7]], dtype=torch.float32)
 model.eval()
 
 with torch.no_grad():
-    prediction = model(test)
+    outputs = model(test)
+    probabilities = torch.softmax(outputs, dim=1)
+    predicted_class = torch.argmax(probabilities, dim=1)
 
-predicted_class = 1 if prediction.item() >= 0.5 else 0
+print("Probabilities:", probabilities)
+print("Predicted Class:", predicted_class.item())
 
-print("Probability:", prediction.item())
-
-if predicted_class == 1:
-    print("Pass")
-else:
+if predicted_class.item() == 0:
     print("Fail")
+elif predicted_class.item() == 1:
+    print("Good")
+else:
+    print("Excellent")
