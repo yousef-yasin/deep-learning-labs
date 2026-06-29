@@ -4,23 +4,14 @@ from torch.utils.data import Dataset, DataLoader
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-# Project:
-# Student AI Performance Classifier
-#
-# Inputs:
-# study_hours, sleep_hours, attendance, assignments_completed, previous_score
-#
-# Output:
-# 0 = Low
-# 1 = Medium
-# 2 = High
-BASE_DIR = Path(__file__).resolve().parent.parent
 
+BASE_DIR = Path(__file__).resolve().parent.parent
 MODELS_DIR = BASE_DIR / "models"
 IMAGES_DIR = BASE_DIR / "images"
 
 MODELS_DIR.mkdir(exist_ok=True)
 IMAGES_DIR.mkdir(exist_ok=True)
+
 
 class StudentAIDataset(Dataset):
 
@@ -128,7 +119,8 @@ def evaluate_model(model, dataloader):
             correct += (predicted == y).sum().item()
             total += y.size(0)
 
-    return correct / total
+    accuracy = correct / total
+    return accuracy
 
 
 def predict_student(model, student_data):
@@ -155,7 +147,7 @@ def save_loss_plot(loss_history):
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
     plt.title("Student AI Classifier - Training Loss")
-    plt.savefig("../images/student_ai_training_loss.png")
+    plt.savefig(IMAGES_DIR / "student_ai_training_loss.png")
     plt.close()
 
 
@@ -189,10 +181,15 @@ def main():
 
     print("Final Accuracy:", accuracy)
 
-    torch.save(model.state_dict(), "../models/student_ai_model.pth")
+    torch.save(
+        model.state_dict(),
+        MODELS_DIR / "student_ai_model.pth"
+    )
+
     print("Model saved successfully.")
 
     save_loss_plot(loss_history)
+
     print("Loss plot saved successfully.")
 
     prediction, probabilities = predict_student(
