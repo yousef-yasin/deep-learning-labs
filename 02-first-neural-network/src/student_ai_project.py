@@ -14,7 +14,13 @@ from pathlib import Path
 # 0 = Low
 # 1 = Medium
 # 2 = High
+BASE_DIR = Path(__file__).resolve().parent.parent
 
+MODELS_DIR = BASE_DIR / "models"
+IMAGES_DIR = BASE_DIR / "images"
+
+MODELS_DIR.mkdir(exist_ok=True)
+IMAGES_DIR.mkdir(exist_ok=True)
 
 class StudentAIDataset(Dataset):
 
