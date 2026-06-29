@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 import matplotlib.pyplot as plt
-
+from pathlib import Path
 
 # Project:
 # Student AI Performance Classifier
