@@ -2,7 +2,10 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader, random_split
-
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
 
 class StudentPerformanceDataset(Dataset):
     def __init__(self):
@@ -167,6 +170,15 @@ def main():
         model=model,
         student_data=[5, 7, 75, 3]
     )
+    plt.figure()
+    heatmap_data = np.random.rand(10, 10)
+    sns.heatmap(heatmap_data, annot=True, fmt=".2f", cmap="YlGnBu")
+    sns.axes_style("whitegrid")
+    sns.set_context("talk")
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
+    plt.title("Training Loss")
+    plt.show()
 
 
 if __name__ == "__main__":
