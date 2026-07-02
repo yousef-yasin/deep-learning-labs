@@ -4,7 +4,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
 from torch.utils.data import random_split
-
+from torch.utils.data import TensorDataset
 x=torch.tensor([[2, 6, 60, 1],
                  [3, 5, 65, 2],
                     [4, 6, 70, 2],
@@ -28,6 +28,7 @@ class StudentPerformanceDataset(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         return self.x[idx], self.y[idx]
     
+    
 class StudentPerformanceModel(nn.Module):
     def __init__(self):
         super(StudentPerformanceModel, self).__init__()
@@ -41,6 +42,12 @@ class StudentPerformanceModel(nn.Module):
 
     def forward(self, x):
         return self.network(x)
+
+tensor_dataset = StudentPerformanceDataset(x, y)
+test_size = int(0.2 * len(tensor_dataset))
+train_size = len(tensor_dataset) - test_size
+train_dataset, test_dataset = random_split(tensor_dataset, [train_size, test_size])
+train_loader = DataLoader(train_dataset, batch_size=2, shuffle=True)
 
 model = nn.Sequential(
     nn.Linear(4, 16),
@@ -79,3 +86,28 @@ with torch.no_grad():
         print("Predicted Performance: Poor")
     elif 2 <= test_output.item() < 4:
         print("Predicted Performance: Average")
+
+if test_output.item() >= 4:
+        print("Predicted Performance: Excellent")
+
+if __name__ == "__main__":
+    dataset = StudentPerformanceDataset(x, y)
+    dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
+
+    model = StudentPerformanceModel()
+    optimizer = optim.Adam(model.parameters(), lr=0.01)
+    loss_fn = nn.MSELoss()
+
+    trained_model = trained_model(model, dataloader, loss_fn, optimizer, epochs=1500)
+
+test_input = torch.tensor([[5, 7, 75, 3]], dtype=torch.float32)
+with torch.no_grad():
+    test_output = trained_model(test_input)
+    print(f'Test Input: {test_input}, Predicted Output: {test_output.item()}')
+
+    if test_output.item() < 2:
+        print("Predicted Performance: Poor")
+    elif 2 <= test_output.item() < 4:
+        print("Predicted Performance: Average")
+    else:
+        print("Predicted Performance: Excellent")
