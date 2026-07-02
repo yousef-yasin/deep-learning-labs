@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
+from torch.utils.data import Dataset
+from torch.utils.data import random_split
 
 x=torch.tensor([[2, 6, 60, 1],
                  [3, 5, 65, 2],
@@ -26,6 +28,19 @@ class StudentPerformanceDataset(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         return self.x[idx], self.y[idx]
     
+class StudentPerformanceModel(nn.Module):
+    def __init__(self):
+        super(StudentPerformanceModel, self).__init__()
+        self.network = nn.Sequential(
+            nn.Linear(4, 16),
+            nn.ReLU(),
+            nn.Linear(16, 8),
+            nn.ReLU(),
+            nn.Linear(8, 1)
+        )
+
+    def forward(self, x):
+        return self.network(x)
 
 model = nn.Sequential(
     nn.Linear(4, 16),
@@ -34,6 +49,9 @@ model = nn.Sequential(
     nn.ReLU(),
     nn.Linear(8, 1))
 
+optimizer = optim.Adam(model.parameters(), lr=0.01)
+loss_fn = nn.MSELoss()
+    
 for epoch in range(1500):
     optimizer = optim.Adam(model.parameters(), lr=0.01)
     loss_fn = nn.MSELoss()
@@ -56,3 +74,8 @@ test_input = torch.tensor([[5, 7, 75, 3]], dtype=torch.float32)
 with torch.no_grad():
     test_output = trained_model(test_input)
     print(f'Test Input: {test_input}, Predicted Output: {test_output.item()}')
+
+    if test_output.item() < 2:
+        print("Predicted Performance: Poor")
+    elif 2 <= test_output.item() < 4:
+        print("Predicted Performance: Average")
